@@ -3,7 +3,7 @@ const { app, users } = require('../backend/app');
 
 describe('User API Tests', () => {
     beforeEach(() => {
-         // Reset in memory DB
+        // Reset in-memory DB
         users.length = 0;
     });
 
@@ -41,9 +41,57 @@ describe('User API Tests', () => {
         expect(res.statusCode).toBe(404);
     });
 
-    //TODO - add test logic for these cases:
-    // it('should return an error for invalid first name')
-    // it('should return an error for invalid email')
-    // it('should return an error for invalid password')
+    // Invalid first name
+    it('should return an error for invalid first name', async () => {
+        const res = await request(app)
+            .post('/users')
+            .send({
+                firstName: '',
+                lastName: 'Horvat',
+                username: 'ivan123',
+                email: 'ivan@example.com',
+                password: 'Secure@123'
+            });
+        expect(res.statusCode).toBe(400);
+        expect(res.body.error).toBe('First name and last name must be between 3 and 50 characters.');
+    });
+    
+
+    // Invalid email
+    it('should return an error for invalid email', async () => {
+        const res = await request(app)
+            .post('/users')
+            .send({
+                firstName: 'Ivan',
+                lastName: 'Horvat',
+                username: 'ivan123',
+                email: 'ivan@invalid',
+                password: 'Secure@123'
+            });
+        expect(res.statusCode).toBe(400);
+        expect(res.body.error).toBe('Invalid email format.');
+    });
+
+
+    // Invalid password
+    it('should return an error for invalid password', async () => {
+        const res = await request(app)
+            .post('/users')
+            .send({
+                firstName: 'Ivan',
+                lastName: 'Horvat',
+                username: 'ivan123',
+                email: 'ivan@example.com',
+                password: 'short'
+            });
+        expect(res.statusCode).toBe(400);
+        expect(res.body.error).toBe('Password must be at least 8 characters long, contain one uppercase letter, and one special character.');
+    });
+    
+
+    it('should return 404 for a non-existing user', async () => {
+        const res = await request(app).get('/users/99');
+        expect(res.statusCode).toBe(404);
+    });
 
 });
