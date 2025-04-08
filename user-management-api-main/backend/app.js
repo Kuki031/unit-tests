@@ -4,7 +4,7 @@ app.use(express.json()); // Middleware to parse JSON request bodies
 
 // In-memory array to store user data since we have no database here
 const users = []; 
-
+const errors = [];
 /**
  * Helper validation functions
  */

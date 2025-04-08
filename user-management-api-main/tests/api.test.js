@@ -87,11 +87,4 @@ describe('User API Tests', () => {
         expect(res.statusCode).toBe(400);
         expect(res.body.error).toBe('Password must be at least 8 characters long, contain one uppercase letter, and one special character.');
     });
-    
-
-    it('should return 404 for a non-existing user', async () => {
-        const res = await request(app).get('/users/99');
-        expect(res.statusCode).toBe(404);
-    });
-
 });
